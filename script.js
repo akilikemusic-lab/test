@@ -109,3 +109,93 @@ if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("./sw.js");
     });
 }
+
+// ========================================
+// v0.3 画像OCR
+// ========================================
+
+// 画像選択欄
+const imageInput = document.getElementById("imageInput");
+
+// 画像プレビュー
+const imagePreview = document.getElementById("imagePreview");
+
+// OCR結果表示欄
+const ocrResult = document.getElementById("ocrResult");
+
+// OCRボタン
+const ocrButton = document.getElementById("ocrButton");
+
+
+// 画像が選択されたときの処理
+imageInput.addEventListener("change", function () {
+
+  // 選択されたファイルを取得
+  const file = imageInput.files[0];
+
+  // ファイルが選択されていなければ終了
+  if (!file) {
+    return;
+  }
+
+  // 画像を表示するための一時URLを作成
+  const imageURL = URL.createObjectURL(file);
+
+  // プレビュー画像に設定
+  imagePreview.src = imageURL;
+
+  // 非表示を解除
+  imagePreview.style.display = "block";
+
+});
+
+// OCRボタンが押されたときの処理
+ocrButton.addEventListener("click", async function () {
+
+  // 画像が選択されているか確認
+  const file = imageInput.files[0];
+
+  if (!file) {
+    alert("先に画像を選択してください。");
+    return;
+  }
+
+  // OCR処理中であることを表示
+  ocrResult.textContent = "OCR処理中です。少し待ってください...";
+
+  try {
+
+    // OCRを実行
+    const result = await Tesseract.recognize(
+      file,
+      "jpn",
+      {
+        logger: function (info) {
+
+          // OCRの進行状況を表示
+          if (info.status) {
+            ocrResult.textContent =
+              info.status + "\n" +
+              Math.round((info.progress || 0) * 100) + "%";
+          }
+
+        }
+      }
+    );
+
+    // OCRで読み取った文字
+    const text = result.data.text;
+
+    // 結果を表示
+    ocrResult.textContent = text;
+
+  } catch (error) {
+
+    console.error(error);
+
+    ocrResult.textContent =
+      "OCR処理中にエラーが発生しました。";
+
+  }
+
+});

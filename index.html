@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>睡眠健康アプリ v0.1</title>
+  <title>睡眠健康アプリ v0.3</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
- <meta name="apple-mobile-web-app-capable" content="yes">
- <meta name="apple-mobile-web-app-status-bar-style" content="default">
- <meta name="apple-mobile-web-app-title" content="睡眠記録">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="睡眠記録">
 </head>
 <body>
   <main class="container">
     <h1>睡眠健康アプリ</h1>
-    <p class="version">v0.1</p>
+    <p class="version">v0.3</p>
 
     <section class="card">
       <h2>今日の記録</h2>
@@ -60,12 +60,22 @@
       <label for="notes">メモ</label>
       <textarea id="notes" rows="4" placeholder="気になったことがあれば入力してください"></textarea>
 
+  <h2>画像から読み取る</h2>
+      <input type="file" id="imageInput" accept="image/*">
+  <br><br>
+      <img id="imagePreview" style="max-width: 100%; display: none;">
+  <button id="ocrButton"> OCRを実行 </button>
+  <h3>OCR結果</h3>
+  <pre id="ocrResult"></pre>
+
       <button id="saveButton" type="button">保存する</button>
 
       <p id="message" class="message"></p>
     </section>
   </main>
 
+  <!--           Tesseract.jsの役割文 OCR処理             -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
