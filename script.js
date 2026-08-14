@@ -103,3 +103,9 @@ function clearInputAfterSave() {
   beverageInput.value = "";
   notesInput.value = "";
 }
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js");
+    });
+}
