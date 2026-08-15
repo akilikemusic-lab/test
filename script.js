@@ -12,7 +12,7 @@ const GAS_URL =
 
 
 // ========================================
-// ページ読み込み後に実行
+// ページ読み込み後
 // ========================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ========================================
-  // HTML要素の存在確認
+  // HTML要素確認
   // ========================================
 
   const requiredElements = [
@@ -114,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     return;
-
   }
 
 
@@ -158,35 +157,29 @@ document.addEventListener("DOMContentLoaded", () => {
     "click",
     async () => {
 
-      message.textContent =
-        "";
+      message.textContent = "";
 
 
       const date =
         dateInput.value;
-
 
       const sleepDurationMinutes =
         Number(
           sleepDurationInput.value
         );
 
-
       const rhythmGameCondition =
         Number(
           rhythmGameConditionInput.value
         );
-
 
       const physicalCondition =
         Number(
           physicalConditionInput.value
         );
 
-
       const beverage =
         beverageInput.value;
-
 
       const notes =
         notesInput.value.trim();
@@ -202,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
           "日付を入力してください。";
 
         return;
-
       }
 
 
@@ -215,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
           "睡眠時間を入力してください。";
 
         return;
-
       }
 
 
@@ -225,7 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
           "音ゲーの調子を選択してください。";
 
         return;
-
       }
 
 
@@ -235,7 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
           "体調を選択してください。";
 
         return;
-
       }
 
 
@@ -258,19 +247,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         notes:
           notes
-
       };
 
 
       // ========================================
-      // 保存開始
+      // 保存
       // ========================================
 
-      saveButton.disabled =
-        true;
-
-      saveButton.textContent =
-        "保存中...";
+      saveButton.disabled = true;
+      saveButton.textContent = "保存中...";
 
 
       try {
@@ -294,7 +279,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
               body:
                 JSON.stringify(data)
-
             }
           );
 
@@ -317,23 +301,16 @@ document.addEventListener("DOMContentLoaded", () => {
           message.textContent =
             "保存しました。";
 
-
           clearInputAfterSave();
 
-
-          // ダッシュボード更新
           await loadDashboard();
-
 
         } else {
 
           message.textContent =
             "保存に失敗しました。";
 
-          console.error(
-            result
-          );
-
+          console.error(result);
         }
 
 
@@ -347,94 +324,217 @@ document.addEventListener("DOMContentLoaded", () => {
         message.textContent =
           "通信エラーが発生しました。";
 
-
       } finally {
 
-        saveButton.disabled =
-          false;
-
-        saveButton.textContent =
-          "保存する";
-
+        saveButton.disabled = false;
+        saveButton.textContent = "保存する";
       }
 
     }
   );
-  
-// ========================================
-// ダッシュボードデータ取得
-// JSONP方式
-// ========================================
-
-function loadDashboard() {
-
-  return new Promise(
-    (resolve, reject) => {
-
-      console.log(
-        "GASからダッシュボードデータを取得します。"
-      );
 
 
-      // ------------------------------------
-      // 読み込み中
-      // ------------------------------------
+  // ========================================
+  // ダッシュボードデータ取得
+  // JSONP
+  // ========================================
 
-      latestDate.textContent =
-        "読み込み中...";
+  function loadDashboard() {
 
-      latestSleepDuration.textContent =
-        "読み込み中...";
+    return new Promise(
+      (resolve, reject) => {
 
-
-      // ------------------------------------
-      // JSONP callback名
-      // ------------------------------------
-
-      const callbackName =
-        "dashboardCallback_" +
-        Date.now();
-
-
-      // ------------------------------------
-      // scriptタグ
-      // ------------------------------------
-
-      const script =
-        document.createElement(
-          "script"
+        console.log(
+          "GASからダッシュボードデータを取得します。"
         );
 
 
-      // ------------------------------------
-      // タイムアウト
-      // ------------------------------------
+        // ------------------------------------
+        // 読み込み中
+        // ------------------------------------
 
-      let finished =
-        false;
+        latestDate.textContent =
+          "読み込み中...";
+
+        latestSleepDuration.textContent =
+          "読み込み中...";
+
+        latestRhythmGame.textContent =
+          "読み込み中...";
+
+        latestPhysicalCondition.textContent =
+          "読み込み中...";
 
 
-      const timeout =
-        setTimeout(
-          () => {
+        // ------------------------------------
+        // callback名
+        // ------------------------------------
+
+        const callbackName =
+          "dashboardCallback_" +
+          Date.now();
+
+
+        // ------------------------------------
+        // scriptタグ作成
+        // ------------------------------------
+
+        const script =
+          document.createElement("script");
+
+
+        let finished = false;
+
+
+        // ------------------------------------
+        // タイムアウト
+        // ------------------------------------
+
+        const timeout =
+          setTimeout(
+            () => {
+
+              if (finished) {
+                return;
+              }
+
+              finished = true;
+
+              script.remove();
+
+              delete window[callbackName];
+
+              console.error(
+                "GASからの応答がタイムアウトしました。"
+              );
+
+              showDashboardError();
+
+              reject(
+                new Error(
+                  "GASからの応答がありません。"
+                )
+              );
+
+            },
+            15000
+          );
+
+
+        // ------------------------------------
+        // GASから返ってきたとき
+        // ------------------------------------
+
+        window[callbackName] =
+          function(result) {
 
             if (finished) {
               return;
             }
 
+            finished = true;
 
-            finished =
-              true;
-
+            clearTimeout(timeout);
 
             script.remove();
 
+            delete window[callbackName];
+
+
+            console.log(
+              "GASから取得したJSON:",
+              result
+            );
+
+
+            // --------------------------------
+            // GAS側エラー
+            // --------------------------------
+
+            if (
+              !result ||
+              result.status !== "success"
+            ) {
+
+              const error =
+                new Error(
+                  result &&
+                  result.message
+                    ? result.message
+                    : "データ取得に失敗しました。"
+                );
+
+
+              console.error(
+                "GASエラー:",
+                error
+              );
+
+
+              showDashboardError();
+
+
+              reject(error);
+
+              return;
+            }
+
+
+            // --------------------------------
+            // データ取得
+            // --------------------------------
+
+            const data =
+              Array.isArray(result.data)
+                ? result.data
+                : [];
+
+
+            console.log(
+              "取得したデータ:",
+              data
+            );
+
+            console.log(
+              "データ件数:",
+              data.length
+            );
+
+
+            // --------------------------------
+            // ダッシュボード更新
+            // --------------------------------
+
+            updateDashboard(data);
+
+
+            resolve(data);
+
+          };
+
+
+        // ------------------------------------
+        // 通信エラー
+        // ------------------------------------
+
+        script.onerror =
+          function() {
+
+            if (finished) {
+              return;
+            }
+
+            finished = true;
+
+            clearTimeout(timeout);
+
+            script.remove();
 
             delete window[callbackName];
 
 
             console.error(
-              "GASからの応答がタイムアウトしました。"
+              "GASへのJSONP通信に失敗しました。"
             );
 
 
@@ -443,202 +543,48 @@ function loadDashboard() {
 
             reject(
               new Error(
-                "GASからの応答がありません。"
+                "GASへの通信に失敗しました。"
               )
             );
 
-          },
-          15000
+          };
+
+
+        // ------------------------------------
+        // JSONP URL
+        // ------------------------------------
+
+        const jsonpUrl =
+          GAS_URL +
+          "?callback=" +
+          encodeURIComponent(
+            callbackName
+          );
+
+
+        console.log(
+          "JSONP URL:",
+          jsonpUrl
         );
 
 
-      // ------------------------------------
-      // 成功時callback
-      // ------------------------------------
+        // ------------------------------------
+        // 通信開始
+        // ------------------------------------
 
-      window[callbackName] =
-        function(result) {
+        script.src =
+          jsonpUrl;
 
-          if (finished) {
-            return;
-          }
 
-
-          finished =
-            true;
-
-
-          clearTimeout(
-            timeout
-          );
-
-
-          script.remove();
-
-
-          delete window[callbackName];
-
-
-          console.log(
-            "GASから取得したJSON:",
-            result
-          );
-
-
-          // --------------------------------
-          // GAS側エラー
-          // --------------------------------
-
-          if (
-            !result ||
-            result.status !==
-            "success"
-          ) {
-
-            const error =
-              new Error(
-                result &&
-                result.message
-                  ? result.message
-                  : "データ取得に失敗しました。"
-              );
-
-
-            console.error(
-              "GASエラー:",
-              error
-            );
-
-
-            showDashboardError();
-
-
-            reject(
-              error
-            );
-
-
-            return;
-
-          }
-
-
-          // --------------------------------
-          // データ取得
-          // --------------------------------
-
-          const data =
-            Array.isArray(
-              result.data
-            )
-              ? result.data
-              : [];
-
-
-          console.log(
-            "取得したデータ:",
-            data
-          );
-
-
-          console.log(
-            "データ件数:",
-            data.length
-          );
-
-
-          // --------------------------------
-          // ダッシュボード更新
-          // --------------------------------
-
-          updateDashboard(
-            data
-          );
-
-
-          resolve(
-            data
-          );
-
-        };
-
-
-      // ------------------------------------
-      // 通信エラー
-      // ------------------------------------
-
-      script.onerror =
-        function() {
-
-          if (finished) {
-            return;
-          }
-
-
-          finished =
-            true;
-
-
-          clearTimeout(
-            timeout
-          );
-
-
-          script.remove();
-
-
-          delete window[callbackName];
-
-
-          console.error(
-            "GASへのJSONP通信に失敗しました。"
-          );
-
-
-          showDashboardError();
-
-
-          reject(
-            new Error(
-              "GASへの通信に失敗しました。"
-            )
-          );
-
-        };
-
-
-      // ------------------------------------
-      // GAS URL
-      // ------------------------------------
-
-      script.src =
-        GAS_URL +
-        "?callback=" +
-        encodeURIComponent(
-          callbackName
-        );
-
-
-      console.log(
-        "JSONP URL:",
-        script.src
-      );
-
-
-      // ------------------------------------
-      // 読み込み開始
-      // ------------------------------------
-
-      document
-        .head
-        .appendChild(
+        document.head.appendChild(
           script
         );
 
-    }
-  );
+      }
+    );
 
-}
+  }
+
 
   // ========================================
   // ダッシュボード更新
@@ -652,22 +598,23 @@ function loadDashboard() {
     );
 
 
+    // ------------------------------------
     // 日付順に並べる
+    // ------------------------------------
+
     const sortedData =
       data
         .slice()
         .sort(
           (a, b) =>
-            String(a.date)
-              .localeCompare(
-                String(b.date)
-              )
+            new Date(a.date) -
+            new Date(b.date)
         );
 
 
-    // ========================================
+    // ------------------------------------
     // データなし
-    // ========================================
+    // ------------------------------------
 
     if (
       sortedData.length === 0
@@ -707,7 +654,6 @@ function loadDashboard() {
       `;
 
       return;
-
     }
 
 
@@ -830,7 +776,6 @@ function loadDashboard() {
 
       averageSleepDuration.textContent =
         "---";
-
     }
 
 
@@ -858,7 +803,6 @@ function loadDashboard() {
 
       averageRhythmGame.textContent =
         "---";
-
     }
 
 
@@ -886,7 +830,6 @@ function loadDashboard() {
 
       averagePhysicalCondition.textContent =
         "---";
-
     }
 
 
@@ -898,29 +841,21 @@ function loadDashboard() {
       sortedData
         .slice()
         .reverse()
-        .slice(
-          0,
-          10
-        );
+        .slice(0, 10);
 
 
-    historyTableBody.innerHTML =
-      "";
+    historyTableBody.innerHTML = "";
 
 
     history.forEach(
       item => {
 
         const row =
-          document.createElement(
-            "tr"
-          );
+          document.createElement("tr");
 
 
         const dateCell =
-          document.createElement(
-            "td"
-          );
+          document.createElement("td");
 
         dateCell.textContent =
           formatDate(
@@ -929,9 +864,7 @@ function loadDashboard() {
 
 
         const sleepCell =
-          document.createElement(
-            "td"
-          );
+          document.createElement("td");
 
         sleepCell.textContent =
           formatSleepDuration(
@@ -942,9 +875,7 @@ function loadDashboard() {
 
 
         const rhythmCell =
-          document.createElement(
-            "td"
-          );
+          document.createElement("td");
 
         rhythmCell.textContent =
           formatCondition(
@@ -953,9 +884,7 @@ function loadDashboard() {
 
 
         const physicalCell =
-          document.createElement(
-            "td"
-          );
+          document.createElement("td");
 
         physicalCell.textContent =
           formatCondition(
@@ -963,29 +892,50 @@ function loadDashboard() {
           );
 
 
-        row.appendChild(
-          dateCell
-        );
-
-        row.appendChild(
-          sleepCell
-        );
-
-        row.appendChild(
-          rhythmCell
-        );
-
-        row.appendChild(
-          physicalCell
-        );
+        row.appendChild(dateCell);
+        row.appendChild(sleepCell);
+        row.appendChild(rhythmCell);
+        row.appendChild(physicalCell);
 
 
-        historyTableBody.appendChild(
-          row
-        );
+        historyTableBody.appendChild(row);
 
       }
     );
+
+  }
+
+
+  // ========================================
+  // ダッシュボードエラー
+  // ========================================
+
+  function showDashboardError() {
+
+    latestDate.textContent = "---";
+
+    latestSleepDuration.textContent = "---";
+
+    latestRhythmGame.textContent = "---";
+
+    latestPhysicalCondition.textContent = "---";
+
+    recordCount.textContent = "---";
+
+    averageSleepDuration.textContent = "---";
+
+    averageRhythmGame.textContent = "---";
+
+    averagePhysicalCondition.textContent = "---";
+
+
+    historyTableBody.innerHTML = `
+      <tr>
+        <td colspan="4">
+          データを取得できませんでした。
+        </td>
+      </tr>
+    `;
 
   }
 
@@ -996,20 +946,15 @@ function loadDashboard() {
 
   function clearInputAfterSave() {
 
-    sleepDurationInput.value =
-      "";
+    sleepDurationInput.value = "";
 
-    rhythmGameConditionInput.value =
-      "";
+    rhythmGameConditionInput.value = "";
 
-    physicalConditionInput.value =
-      "";
+    physicalConditionInput.value = "";
 
-    beverageInput.value =
-      "";
+    beverageInput.value = "";
 
-    notesInput.value =
-      "";
+    notesInput.value = "";
 
   }
 
@@ -1018,9 +963,7 @@ function loadDashboard() {
   // 睡眠時間表示
   // ========================================
 
-  function formatSleepDuration(
-    minutes
-  ) {
+  function formatSleepDuration(minutes) {
 
     if (
       !Number.isFinite(minutes) ||
@@ -1028,7 +971,6 @@ function loadDashboard() {
     ) {
 
       return "---";
-
     }
 
 
@@ -1047,7 +989,6 @@ function loadDashboard() {
     ) {
 
       return `${hours}時間`;
-
     }
 
 
@@ -1063,9 +1004,7 @@ function loadDashboard() {
   // 調子表示
   // ========================================
 
-  function formatCondition(
-    value
-  ) {
+  function formatCondition(value) {
 
     const number =
       Number(value);
@@ -1077,7 +1016,6 @@ function loadDashboard() {
     ) {
 
       return "---";
-
     }
 
 
@@ -1090,14 +1028,10 @@ function loadDashboard() {
   // 日付表示
   // ========================================
 
-  function formatDate(
-    value
-  ) {
+  function formatDate(value) {
 
     if (!value) {
-
       return "---";
-
     }
 
 
@@ -1105,10 +1039,9 @@ function loadDashboard() {
       String(value);
 
 
+    // YYYY-MM-DD
     if (
-      /^\d{4}-\d{2}-\d{2}$/.test(
-        text
-      )
+      /^\d{4}-\d{2}-\d{2}$/.test(text)
     ) {
 
       const parts =
@@ -1120,6 +1053,46 @@ function loadDashboard() {
         `${parts[1]}/` +
         `${parts[2]}`
       );
+    }
+
+
+    // ISO形式
+    // 2026-08-15T15:00:00.000Z
+
+    if (
+      /^\d{4}-\d{2}-\d{2}T/.test(text)
+    ) {
+
+      const date =
+        new Date(text);
+
+
+      if (
+        !Number.isNaN(
+          date.getTime()
+        )
+      ) {
+
+        const year =
+          date.getFullYear();
+
+        const month =
+          String(
+            date.getMonth() + 1
+          ).padStart(2, "0");
+
+        const day =
+          String(
+            date.getDate()
+          ).padStart(2, "0");
+
+
+        return (
+          `${year}/` +
+          `${month}/` +
+          `${day}`
+        );
+      }
 
     }
 
@@ -1163,44 +1136,3 @@ function loadDashboard() {
   }
 
 });
-
-// ========================================
-// ダッシュボード取得エラー表示
-// ========================================
-
-function showDashboardError() {
-
-  latestDate.textContent =
-    "---";
-
-  latestSleepDuration.textContent =
-    "---";
-
-  latestRhythmGame.textContent =
-    "---";
-
-  latestPhysicalCondition.textContent =
-    "---";
-
-  recordCount.textContent =
-    "---";
-
-  averageSleepDuration.textContent =
-    "---";
-
-  averageRhythmGame.textContent =
-    "---";
-
-  averagePhysicalCondition.textContent =
-    "---";
-
-
-  historyTableBody.innerHTML = `
-    <tr>
-      <td colspan="4">
-        データを取得できませんでした。
-      </td>
-    </tr>
-  `;
-
-}
