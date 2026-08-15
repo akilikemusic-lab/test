@@ -360,132 +360,285 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
   );
+  
+// ========================================
+// ダッシュボードデータ取得
+// JSONP方式
+// ========================================
 
+function loadDashboard() {
 
-  // ========================================
-  // ダッシュボード取得
-  // ========================================
-
-  async function loadDashboard() {
-
-    console.log(
-      "GASからダッシュボードデータを取得します。"
-    );
-
-
-    latestDate.textContent =
-      "読み込み中...";
-
-    latestSleepDuration.textContent =
-      "読み込み中...";
-
-
-    try {
-
-      const response =
-        await fetch(
-          GAS_URL
-        );
-
+  return new Promise(
+    (resolve, reject) => {
 
       console.log(
-        "GASレスポンス:",
-        response
+        "GASからダッシュボードデータを取得します。"
       );
 
 
-      if (!response.ok) {
-
-        throw new Error(
-          `HTTPエラー: ${response.status}`
-        );
-
-      }
-
-
-      const result =
-        await response.json();
-
-
-      console.log(
-        "GAS JSON:",
-        result
-      );
-
-
-      if (
-        result.status !==
-        "success"
-      ) {
-
-        throw new Error(
-          result.message ||
-          "データ取得に失敗しました。"
-        );
-
-      }
-
-
-      const data =
-        Array.isArray(result.data)
-          ? result.data
-          : [];
-
-
-      console.log(
-        "取得データ:",
-        data
-      );
-
-
-      updateDashboard(data);
-
-
-    } catch (error) {
-
-      console.error(
-        "ダッシュボード取得エラー:",
-        error
-      );
-
+      // ------------------------------------
+      // 読み込み中
+      // ------------------------------------
 
       latestDate.textContent =
-        "---";
+        "読み込み中...";
 
       latestSleepDuration.textContent =
-        "---";
-
-      latestRhythmGame.textContent =
-        "---";
-
-      latestPhysicalCondition.textContent =
-        "---";
-
-      recordCount.textContent =
-        "---";
-
-      averageSleepDuration.textContent =
-        "---";
-
-      averageRhythmGame.textContent =
-        "---";
-
-      averagePhysicalCondition.textContent =
-        "---";
+        "読み込み中...";
 
 
-      historyTableBody.innerHTML = `
-        <tr>
-          <td colspan="4">
-            データを取得できませんでした。
-          </td>
-        </tr>
-      `;
+      // ------------------------------------
+      // JSONP callback名
+      // ------------------------------------
+
+      const callbackName =
+        "dashboardCallback_" +
+        Date.now();
+
+
+      // ------------------------------------
+      // scriptタグ
+      // ------------------------------------
+
+      const script =
+        document.createElement(
+          "script"
+        );
+
+
+      // ------------------------------------
+      // タイムアウト
+      // ------------------------------------
+
+      let finished =
+        false;
+
+
+      const timeout =
+        setTimeout(
+          () => {
+
+            if (finished) {
+              return;
+            }
+
+
+            finished =
+              true;
+
+
+            script.remove();
+
+
+            delete window[callbackName];
+
+
+            console.error(
+              "GASからの応答がタイムアウトしました。"
+            );
+
+
+            showDashboardError();
+
+
+            reject(
+              new Error(
+                "GASからの応答がありません。"
+              )
+            );
+
+          },
+          15000
+        );
+
+
+      // ------------------------------------
+      // 成功時callback
+      // ------------------------------------
+
+      window[callbackName] =
+        function(result) {
+
+          if (finished) {
+            return;
+          }
+
+
+          finished =
+            true;
+
+
+          clearTimeout(
+            timeout
+          );
+
+
+          script.remove();
+
+
+          delete window[callbackName];
+
+
+          console.log(
+            "GASから取得したJSON:",
+            result
+          );
+
+
+          // --------------------------------
+          // GAS側エラー
+          // --------------------------------
+
+          if (
+            !result ||
+            result.status !==
+            "success"
+          ) {
+
+            const error =
+              new Error(
+                result &&
+                result.message
+                  ? result.message
+                  : "データ取得に失敗しました。"
+              );
+
+
+            console.error(
+              "GASエラー:",
+              error
+            );
+
+
+            showDashboardError();
+
+
+            reject(
+              error
+            );
+
+
+            return;
+
+          }
+
+
+          // --------------------------------
+          // データ取得
+          // --------------------------------
+
+          const data =
+            Array.isArray(
+              result.data
+            )
+              ? result.data
+              : [];
+
+
+          console.log(
+            "取得したデータ:",
+            data
+          );
+
+
+          console.log(
+            "データ件数:",
+            data.length
+          );
+
+
+          // --------------------------------
+          // ダッシュボード更新
+          // --------------------------------
+
+          updateDashboard(
+            data
+          );
+
+
+          resolve(
+            data
+          );
+
+        };
+
+
+      // ------------------------------------
+      // 通信エラー
+      // ------------------------------------
+
+      script.onerror =
+        function() {
+
+          if (finished) {
+            return;
+          }
+
+
+          finished =
+            true;
+
+
+          clearTimeout(
+            timeout
+          );
+
+
+          script.remove();
+
+
+          delete window[callbackName];
+
+
+          console.error(
+            "GASへのJSONP通信に失敗しました。"
+          );
+
+
+          showDashboardError();
+
+
+          reject(
+            new Error(
+              "GASへの通信に失敗しました。"
+            )
+          );
+
+        };
+
+
+      // ------------------------------------
+      // GAS URL
+      // ------------------------------------
+
+      script.src =
+        GAS_URL +
+        "?callback=" +
+        encodeURIComponent(
+          callbackName
+        );
+
+
+      console.log(
+        "JSONP URL:",
+        script.src
+      );
+
+
+      // ------------------------------------
+      // 読み込み開始
+      // ------------------------------------
+
+      document
+        .head
+        .appendChild(
+          script
+        );
 
     }
+  );
 
-  }
-
+}
 
   // ========================================
   // ダッシュボード更新
@@ -1010,3 +1163,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
+// ========================================
+// ダッシュボード取得エラー表示
+// ========================================
+
+function showDashboardError() {
+
+  latestDate.textContent =
+    "---";
+
+  latestSleepDuration.textContent =
+    "---";
+
+  latestRhythmGame.textContent =
+    "---";
+
+  latestPhysicalCondition.textContent =
+    "---";
+
+  recordCount.textContent =
+    "---";
+
+  averageSleepDuration.textContent =
+    "---";
+
+  averageRhythmGame.textContent =
+    "---";
+
+  averagePhysicalCondition.textContent =
+    "---";
+
+
+  historyTableBody.innerHTML = `
+    <tr>
+      <td colspan="4">
+        データを取得できませんでした。
+      </td>
+    </tr>
+  `;
+
+}
