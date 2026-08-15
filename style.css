@@ -4,23 +4,31 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Yu Gothic", sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    "Yu Gothic",
+    sans-serif;
+
   background: #f4f6f8;
   color: #222;
 }
 
+
 .container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: 16px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
 }
+
 
 h1 {
   margin: 0;
   font-size: 28px;
 }
+
 
 .version {
   margin: 4px 0 20px;
@@ -28,65 +36,245 @@ h1 {
   font-size: 14px;
 }
 
+
 .card {
   background: #fff;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08);
 }
+
 
 h2 {
   margin-top: 0;
   font-size: 20px;
 }
 
+
+h3 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+  font-size: 17px;
+}
+
+
+/* ========================================
+   ダッシュボード
+   ======================================== */
+
+.dashboard-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 12px;
+}
+
+
+.dashboard-item {
+  padding: 16px;
+
+  background: #f4f6f8;
+
+  border-radius: 12px;
+
+  min-width: 0;
+}
+
+
+.dashboard-label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #666;
+
+  font-size: 13px;
+}
+
+
+.dashboard-item strong {
+  display: block;
+
+  font-size: 20px;
+
+  word-break: break-word;
+}
+
+
+.dashboard-period {
+  margin-top: -4px;
+
+  color: #666;
+
+  font-size: 13px;
+}
+
+
+/* ========================================
+   履歴テーブル
+   ======================================== */
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 14px;
+}
+
+
+th,
+td {
+  padding: 10px 6px;
+
+  border-bottom: 1px solid #e1e5e8;
+
+  text-align: center;
+
+  white-space: nowrap;
+}
+
+
+th {
+  font-weight: 700;
+
+  background: #f4f6f8;
+}
+
+
+/* ========================================
+   入力フォーム
+   ======================================== */
+
 label {
   display: block;
+
   margin: 18px 0 8px;
+
   font-weight: 600;
 }
+
 
 input,
 select,
 textarea {
   width: 100%;
+
   padding: 12px;
+
   border: 1px solid #ccd2d8;
+
   border-radius: 10px;
+
   background: #fff;
+
   font-size: 16px;
 }
+
 
 textarea {
   resize: vertical;
 }
 
+
 .hint {
   margin: 6px 0 0;
+
   color: #666;
+
   font-size: 13px;
 }
 
+
+/* ========================================
+   ボタン
+   ======================================== */
+
 button {
   width: 100%;
-  margin-top: 48px;
+
+  margin-top: 32px;
+
   padding: 12px 20px;
+
   border: 0;
+
   border-radius: 10px;
+
   background: #222;
+
   color: #fff;
+
   font-size: 17px;
+
   font-weight: 700;
+
   cursor: pointer;
 }
+
 
 button:disabled {
   opacity: 0.6;
 }
 
+
+/* ========================================
+   メッセージ
+   ======================================== */
+
 .message {
   min-height: 24px;
+
   margin: 14px 0 0;
+
   text-align: center;
+
   font-weight: 600;
+}
+
+
+/* ========================================
+   スマートフォン
+   ======================================== */
+
+@media (max-width: 480px) {
+
+  .container {
+    padding: 12px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .dashboard-grid {
+    gap: 8px;
+  }
+
+  .dashboard-item {
+    padding: 12px;
+  }
+
+  .dashboard-item strong {
+    font-size: 17px;
+  }
+
+  th,
+  td {
+    padding: 8px 4px;
+    font-size: 13px;
+  }
+
 }

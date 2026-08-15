@@ -3,79 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>睡眠健康アプリ v0.3</title>
+
+  <title>睡眠健康アプリ v0.4</title>
+
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
+
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="睡眠記録">
 </head>
+
 <body>
+
   <main class="container">
+
     <h1>睡眠健康アプリ</h1>
-    <p class="version">v0.3</p>
+    <p class="version">v0.4</p>
+
+
+    <!-- ========================================
+         ダッシュボード
+         ======================================== -->
+
+    <section class="card dashboard">
+
+      <h2>ダッシュボード</h2>
+
+      <!-- 最新データ -->
+
+      <h3>最新の記録</h3>
+
+      <div class="dashboard-grid">
+
+        <div class="dashboard-item">
+          <span class="dashboard-label">日付</span>
+          <strong id="latestDate">---</strong>
+        </div>
+
+        <div class="dashboard-item">
+          <span class="dashboard-label">睡眠時間</span>
+          <strong id="latestSleepDuration">---</strong>
+        </div>
+
+        <div class="dashboard-item">
+          <span class="dashboard-label">音ゲーの調子</span>
+          <strong id="latestRhythmGame">---</strong>
+        </div>
+
+        <div class="dashboard-item">
+          <span class="dashboard-label">体調</span>
+          <strong id="latestPhysicalCondition">---</strong>
+        </div>
+
+      </div>
+
+
+      <!-- 集計 -->
+
+      <h3>最近の平均</h3>
+
+      <p class="dashboard-period">
+        記録されているデータを対象
+      </p>
+
+      <div class="dashboard-grid">
+
+        <div class="dashboard-item">
+          <span class="dashboard-label">記録日数</span>
+          <strong id="recordCount">---</strong>
+        </div>
+
+        <div class="dashboard-item">
+          <span class="dashboard-label">平均睡眠時間</span>
+          <strong id="averageSleepDuration">---</strong>
+        </div>
+
+        <div class="dashboard-item">
+          <span class="dashboard-label">平均音ゲー調子</span>
+          <strong id="averageRhythmGame">---</strong>
+        </div>
+
+        <div class="dashboard-item">
+          <span class="dashboard-label">平均体調</span>
+          <strong id="averagePhysicalCondition">---</strong>
+        </div>
+
+      </div>
+
+
+      <!-- 履歴 -->
+
+      <h3>最近の記録</h3>
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>睡眠時間</th>
+              <th>音ゲー</th>
+              <th>体調</th>
+            </tr>
+          </thead>
+
+          <tbody id="historyTableBody">
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================
+         今日の記録
+         ======================================== -->
 
     <section class="card">
+
       <h2>今日の記録</h2>
 
-      <!--           日付             -->
       <label for="date">日付</label>
       <input type="date" id="date">
 
-      <label for="sleepDuration">睡眠時間（分）</label>
-      <input type="number" id="sleepDuration" min="0" placeholder="例：450">
 
-      <p class="hint">例：7時間30分 → 450分</p>
+      <label for="sleepDuration">
+        睡眠時間（分）
+      </label>
 
-      <label for="rhythmGameCondition">音ゲーの調子</label>
+      <input
+        type="number"
+        id="sleepDuration"
+        min="0"
+        placeholder="例：450"
+      >
+
+      <p class="hint">
+        例：7時間30分 → 450分
+      </p>
+
+
+      <label for="rhythmGameCondition">
+        音ゲーの調子
+      </label>
+
       <select id="rhythmGameCondition">
-        <option value="">選択してください</option>
-        <option value="1">1：非常に悪い</option>
-        <option value="2">2：悪い</option>
-        <option value="3">3：普通</option>
-        <option value="4">4：良い</option>
-        <option value="5">5：非常に良い</option>
+
+        <option value="">
+          選択してください
+        </option>
+
+        <option value="1">
+          1：非常に悪い
+        </option>
+
+        <option value="2">
+          2：悪い
+        </option>
+
+        <option value="3">
+          3：普通
+        </option>
+
+        <option value="4">
+          4：良い
+        </option>
+
+        <option value="5">
+          5：非常に良い
+        </option>
+
       </select>
 
-      <label for="physicalCondition">体調</label>
+
+      <label for="physicalCondition">
+        体調
+      </label>
+
       <select id="physicalCondition">
-        <option value="">選択してください</option>
-        <option value="1">1：非常に悪い</option>
-        <option value="2">2：悪い</option>
-        <option value="3">3：普通</option>
-        <option value="4">4：良い</option>
-        <option value="5">5：非常に良い</option>
+
+        <option value="">
+          選択してください
+        </option>
+
+        <option value="1">
+          1：非常に悪い
+        </option>
+
+        <option value="2">
+          2：悪い
+        </option>
+
+        <option value="3">
+          3：普通
+        </option>
+
+        <option value="4">
+          4：良い
+        </option>
+
+        <option value="5">
+          5：非常に良い
+        </option>
+
       </select>
 
-      <label for="beverage">飲料</label>
+
+      <label for="beverage">
+        飲料
+      </label>
+
       <select id="beverage">
-        <option value="">なし・未入力</option>
-        <option value="水">水</option>
-        <option value="コーヒー">コーヒー</option>
-        <option value="お茶">お茶</option>
-        <option value="エナジードリンク">エナジードリンク</option>
-        <option value="その他">その他</option>
+
+        <option value="">
+          なし・未入力
+        </option>
+
+        <option value="水">
+          水
+        </option>
+
+        <option value="コーヒー">
+          コーヒー
+        </option>
+
+        <option value="お茶">
+          お茶
+        </option>
+
+        <option value="エナジードリンク">
+          エナジードリンク
+        </option>
+
+        <option value="その他">
+          その他
+        </option>
+
       </select>
 
-      <label for="notes">メモ</label>
-      <textarea id="notes" rows="4" placeholder="気になったことがあれば入力してください"></textarea>
 
-  <h2>画像から読み取る</h2>
-      <input type="file" id="imageInput" accept="image/*">
-  <br><br>
-      <img id="imagePreview" style="max-width: 100%; display: none;">
-  <button id="ocrButton"> OCRを実行 </button>
-  <h3>OCR結果</h3>
-  <pre id="ocrResult"></pre>
+      <label for="notes">
+        メモ
+      </label>
 
-      <button id="saveButton" type="button">保存する</button>
+      <textarea
+        id="notes"
+        rows="4"
+        placeholder="気になったことがあれば入力してください"
+      ></textarea>
 
-      <p id="message" class="message"></p>
+
+      <button
+        id="saveButton"
+        type="button"
+      >
+        保存する
+      </button>
+
+      <p
+        id="message"
+        class="message"
+      ></p>
+
     </section>
+
   </main>
 
-  <!--           Tesseract.jsの役割文 OCR処理             -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
   <script src="script.js"></script>
+
 </body>
 </html>
