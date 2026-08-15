@@ -8,7 +8,7 @@
 // ========================================
 
 const GAS_URL =
-  "https://script.google.com/macros/s/AKfycbwuhXTHELQ0Rc5zpmdAzPvoPD06idv2qRGYPsBwaV-BgvUCEsFmwpiwRnm20BHrsOx14Q/exec";
+  "https://script.google.com/macros/s/AKfycbyol_xncy0nSQYoaCNPNji5haXj_kAWThmx0-SawOfCisIqFoq3TGSKNx8iaVswW5l98w/exechttps://script.google.com/macros/s/AKfycbwuhXTHELQ0Rc5zpmdAzPvoPD06idv2qRGYPsBwaV-BgvUCEsFmwpiwRnm20BHrsOx14Q/exec";
 
 
 // ========================================
