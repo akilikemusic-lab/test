@@ -1,115 +1,289 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>睡眠健康アプリ v0.4</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
+  <title>睡眠健康アプリ v0.6</title>
 
-  <meta name="mobile-web-app-capable" content="yes">
-  
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="睡眠記録">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <link
+    rel="manifest"
+    href="manifest.json"
+  >
+
+  <meta
+    name="mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="default"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="睡眠記録"
+  >
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js"
+  ></script>
+
 </head>
+
 
 <body>
 
-  <main class="container">
+
+<main class="container">
+
+
+  <!-- ========================================
+       ヘッダー
+       ======================================== -->
+
+  <header class="app-header">
 
     <h1>睡眠健康アプリ</h1>
-    <p class="version">v0.4</p>
+
+    <p class="version">
+      v0.6
+    </p>
+
+  </header>
 
 
-    <!-- ========================================
-         ダッシュボード
-         ======================================== -->
+  <!-- ========================================
+       タブ
+       ======================================== -->
+
+  <nav class="tab-navigation">
+
+    <button
+      class="tab-button active"
+      data-tab="dashboard"
+      type="button"
+    >
+      ダッシュボード
+    </button>
+
+    <button
+      class="tab-button"
+      data-tab="statistics"
+      type="button"
+    >
+      統計分析
+    </button>
+
+    <button
+      class="tab-button"
+      data-tab="input"
+      type="button"
+    >
+      記録入力
+    </button>
+
+  </nav>
+
+
+  <!-- ========================================
+       ダッシュボード
+       ======================================== -->
+
+  <section
+    id="dashboard"
+    class="tab-content active"
+  >
+
 
     <section class="card dashboard">
 
-      <h2>ダッシュボード</h2>
+      <h2>
+        ダッシュボード
+      </h2>
 
-      <!-- 最新データ -->
 
-      <h3>最新の記録</h3>
+      <h3>
+        最新の記録
+      </h3>
+
 
       <div class="dashboard-grid">
 
-        <div class="dashboard-item">
-          <span class="dashboard-label">日付</span>
-          <strong id="latestDate">---</strong>
-        </div>
 
         <div class="dashboard-item">
-          <span class="dashboard-label">睡眠時間</span>
-          <strong id="latestSleepDuration">---</strong>
+
+          <span class="dashboard-label">
+            日付
+          </span>
+
+          <strong id="latestDate">
+            ---
+          </strong>
+
         </div>
 
-        <div class="dashboard-item">
-          <span class="dashboard-label">音ゲーの調子</span>
-          <strong id="latestRhythmGame">---</strong>
-        </div>
 
         <div class="dashboard-item">
-          <span class="dashboard-label">体調</span>
-          <strong id="latestPhysicalCondition">---</strong>
+
+          <span class="dashboard-label">
+            睡眠時間
+          </span>
+
+          <strong id="latestSleepDuration">
+            ---
+          </strong>
+
         </div>
+
+
+        <div class="dashboard-item">
+
+          <span class="dashboard-label">
+            音ゲーの調子
+          </span>
+
+          <strong id="latestRhythmGame">
+            ---
+          </strong>
+
+        </div>
+
+
+        <div class="dashboard-item">
+
+          <span class="dashboard-label">
+            体調
+          </span>
+
+          <strong id="latestPhysicalCondition">
+            ---
+          </strong>
+
+        </div>
+
 
       </div>
 
 
-      <!-- 集計 -->
+      <h3>
+        最近の平均
+      </h3>
 
-      <h3>最近の平均</h3>
 
       <p class="dashboard-period">
         記録されているデータを対象
       </p>
 
+
       <div class="dashboard-grid">
 
-        <div class="dashboard-item">
-          <span class="dashboard-label">記録日数</span>
-          <strong id="recordCount">---</strong>
-        </div>
 
         <div class="dashboard-item">
-          <span class="dashboard-label">平均睡眠時間</span>
-          <strong id="averageSleepDuration">---</strong>
+
+          <span class="dashboard-label">
+            記録日数
+          </span>
+
+          <strong id="recordCount">
+            ---
+          </strong>
+
         </div>
 
-        <div class="dashboard-item">
-          <span class="dashboard-label">平均音ゲー調子</span>
-          <strong id="averageRhythmGame">---</strong>
-        </div>
 
         <div class="dashboard-item">
-          <span class="dashboard-label">平均体調</span>
-          <strong id="averagePhysicalCondition">---</strong>
+
+          <span class="dashboard-label">
+            平均睡眠時間
+          </span>
+
+          <strong id="averageSleepDuration">
+            ---
+          </strong>
+
         </div>
+
+
+        <div class="dashboard-item">
+
+          <span class="dashboard-label">
+            平均音ゲー調子
+          </span>
+
+          <strong id="averageRhythmGame">
+            ---
+          </strong>
+
+        </div>
+
+
+        <div class="dashboard-item">
+
+          <span class="dashboard-label">
+            平均体調
+          </span>
+
+          <strong id="averagePhysicalCondition">
+            ---
+          </strong>
+
+        </div>
+
 
       </div>
 
 
-      <!-- 履歴 -->
+      <h3>
+        最近の記録
+      </h3>
 
-      <h3>最近の記録</h3>
 
       <div class="table-wrapper">
 
         <table>
 
           <thead>
+
             <tr>
-              <th>日付</th>
-              <th>睡眠時間</th>
-              <th>音ゲー</th>
-              <th>体調</th>
+
+              <th>
+                日付
+              </th>
+
+              <th>
+                睡眠時間
+              </th>
+
+              <th>
+                音ゲー
+              </th>
+
+              <th>
+                体調
+              </th>
+
             </tr>
+
           </thead>
+
 
           <tbody id="historyTableBody">
 
@@ -119,19 +293,304 @@
 
       </div>
 
+
     </section>
 
 
-    <!-- ========================================
-         今日の記録
-         ======================================== -->
+  </section>
+
+
+
+  <!-- ========================================
+       統計分析
+       ======================================== -->
+
+  <section
+    id="statistics"
+    class="tab-content"
+  >
+
 
     <section class="card">
 
-      <h2>今日の記録</h2>
+      <h2>
+        統計分析
+      </h2>
 
-      <label for="date">日付</label>
-      <input type="date" id="date">
+
+      <!-- ====================================
+           期間選択
+           ==================================== -->
+
+      <div class="period-selector">
+
+        <h3>
+          分析期間
+        </h3>
+
+
+        <div class="period-buttons">
+
+
+          <button
+            class="period-button active"
+            data-period="7"
+            type="button"
+          >
+            7日
+          </button>
+
+
+          <button
+            class="period-button"
+            data-period="30"
+            type="button"
+          >
+            30日
+          </button>
+
+
+          <button
+            class="period-button"
+            data-period="90"
+            type="button"
+          >
+            90日
+          </button>
+
+
+          <button
+            class="period-button"
+            data-period="all"
+            type="button"
+          >
+            全期間
+          </button>
+
+
+        </div>
+
+
+        <p
+          id="statisticsPeriodText"
+          class="period-description"
+        >
+          過去7日間のデータ
+        </p>
+
+      </div>
+
+
+      <!-- ====================================
+           基本統計
+           ==================================== -->
+
+      <h3>
+        基本統計
+      </h3>
+
+
+      <div class="statistics-grid">
+
+
+        <div class="statistics-item">
+
+          <span>
+            記録日数
+          </span>
+
+          <strong id="statsRecordCount">
+            ---
+          </strong>
+
+        </div>
+
+
+        <div class="statistics-item">
+
+          <span>
+            平均睡眠時間
+          </span>
+
+          <strong id="statsAverageSleep">
+            ---
+          </strong>
+
+        </div>
+
+
+        <div class="statistics-item">
+
+          <span>
+            中央値睡眠時間
+          </span>
+
+          <strong id="statsMedianSleep">
+            ---
+          </strong>
+
+        </div>
+
+
+        <div class="statistics-item">
+
+          <span>
+            最短睡眠時間
+          </span>
+
+          <strong id="statsMinSleep">
+            ---
+          </strong>
+
+        </div>
+
+
+        <div class="statistics-item">
+
+          <span>
+            最長睡眠時間
+          </span>
+
+          <strong id="statsMaxSleep">
+            ---
+          </strong>
+
+        </div>
+
+
+        <div class="statistics-item">
+
+          <span>
+            平均音ゲー調子
+          </span>
+
+          <strong id="statsAverageRhythm">
+            ---
+          </strong>
+
+        </div>
+
+
+        <div class="statistics-item">
+
+          <span>
+            平均体調
+          </span>
+
+          <strong id="statsAveragePhysical">
+            ---
+          </strong>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- ====================================
+           相関分析
+           ==================================== -->
+
+      <h3>
+        睡眠時間と音ゲーの関係
+      </h3>
+
+
+      <div class="correlation-card">
+
+        <span class="dashboard-label">
+          相関係数
+        </span>
+
+        <strong id="sleepRhythmCorrelation">
+          ---
+        </strong>
+
+
+        <p id="correlationDescription">
+          ---
+        </p>
+
+      </div>
+
+
+      <!-- ====================================
+           統計グラフ
+           ==================================== -->
+
+      <h3>
+        期間内の推移
+      </h3>
+
+
+      <section class="chart-section">
+
+        <canvas
+          id="statisticsSleepChart"
+        ></canvas>
+
+      </section>
+
+
+      <section class="chart-section">
+
+        <canvas
+          id="statisticsRhythmChart"
+        ></canvas>
+
+      </section>
+
+
+      <section class="chart-section">
+
+        <canvas
+          id="statisticsPhysicalChart"
+        ></canvas>
+
+      </section>
+
+
+      <section class="chart-section">
+
+        <canvas
+          id="statisticsComparisonChart"
+        ></canvas>
+
+      </section>
+
+
+    </section>
+
+
+  </section>
+
+
+
+  <!-- ========================================
+       記録入力
+       ======================================== -->
+
+  <section
+    id="input"
+    class="tab-content"
+  >
+
+
+    <section class="card">
+
+      <h2>
+        今日の記録
+      </h2>
+
+
+      <label for="date">
+        日付
+      </label>
+
+      <input
+        type="date"
+        id="date"
+      >
 
 
       <label for="sleepDuration">
@@ -145,16 +604,136 @@
         placeholder="例：450"
       >
 
+
       <p class="hint">
         例：7時間30分 → 450分
       </p>
+      
+<label for="sleepScore">
+  睡眠スコア
+</label>
 
+<input
+  type="number"
+  id="sleepScore"
+  min="0"
+  placeholder="例：85"
+>
+
+<p class="hint">
+  睡眠アプリに表示された睡眠スコアを入力してください
+</p>
+
+
+<label for="deepSleepPercent">
+  深い睡眠（%）
+</label>
+
+<input
+  type="number"
+  id="deepSleepPercent"
+  min="0"
+  max="100"
+  step="0.1"
+  placeholder="例：22"
+>
+
+
+<label for="lightSleepPercent">
+  浅い睡眠（%）
+</label>
+
+<input
+  type="number"
+  id="lightSleepPercent"
+  min="0"
+  max="100"
+  step="0.1"
+  placeholder="例：52"
+>
+
+
+<label for="remSleepPercent">
+  REM睡眠（%）
+</label>
+
+<input
+  type="number"
+  id="remSleepPercent"
+  min="0"
+  max="100"
+  step="0.1"
+  placeholder="例：26"
+>
+
+
+<label for="sleepStart">
+  就寝時刻
+</label>
+
+<input
+  type="time"
+  id="sleepStart"
+>
+
+
+<label for="sleepEnd">
+  起床時刻
+</label>
+
+<input
+  type="time"
+  id="sleepEnd"
+>
+
+<label for="game">
+  プレイした音ゲー
+</label>
+
+<select id="game">
+
+  <option value="">
+    選択してください
+  </option>
+
+  <option value="maimai">
+    maimai
+  </option>
+
+  <option value="beatmania IIDX">
+    beatmania IIDX
+  </option>
+
+  <option value="SOUND VOLTEX">
+    SOUND VOLTEX
+  </option>
+
+  <option value="太鼓の達人">
+    太鼓の達人
+  </option>
+
+  <option value="CHUNITHM">
+    CHUNITHM
+  </option>
+
+  <option value="オンゲキ">
+    オンゲキ
+  </option>
+
+  <option value="その他">
+    その他
+  </option>
+
+</select>
 
       <label for="rhythmGameCondition">
         音ゲーの調子
       </label>
 
-      <select id="rhythmGameCondition">
+
+      <select
+        id="rhythmGameCondition"
+      >
 
         <option value="">
           選択してください
@@ -187,7 +766,10 @@
         体調
       </label>
 
-      <select id="physicalCondition">
+
+      <select
+        id="physicalCondition"
+      >
 
         <option value="">
           選択してください
@@ -219,8 +801,23 @@
       <label for="beverage">
         飲料
       </label>
+      
+<label for="caffeineTime">
+  カフェイン摂取時刻
+</label>
 
-      <select id="beverage">
+<input
+  type="time"
+  id="caffeineTime"
+>
+
+<p class="hint">
+  コーヒー・お茶・エナジードリンクなどを飲んだ時刻
+</p>
+
+      <select
+        id="beverage"
+      >
 
         <option value="">
           なし・未入力
@@ -253,6 +850,7 @@
         メモ
       </label>
 
+
       <textarea
         id="notes"
         rows="4"
@@ -267,17 +865,24 @@
         保存する
       </button>
 
+
       <p
         id="message"
         class="message"
       ></p>
 
+
     </section>
 
-  </main>
+
+  </section>
 
 
-  <script src="script.js"></script>
+</main>
+
+
+<script src="script.js"></script>
 
 </body>
+
 </html>

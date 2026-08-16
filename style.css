@@ -2,8 +2,11 @@
   box-sizing: border-box;
 }
 
+
 body {
+
   margin: 0;
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -12,52 +15,157 @@ body {
     sans-serif;
 
   background: #f4f6f8;
+
   color: #222;
 }
 
 
 .container {
+
   width: 100%;
+
   max-width: 800px;
+
   margin: 0 auto;
+
   padding: 16px;
 }
 
 
+/* ========================================
+   ヘッダー
+   ======================================== */
+
+.app-header {
+
+  margin-bottom: 16px;
+}
+
+
 h1 {
+
   margin: 0;
+
   font-size: 28px;
 }
 
 
 .version {
-  margin: 4px 0 20px;
+
+  margin: 4px 0 0;
+
   color: #666;
+
   font-size: 14px;
 }
 
 
-.card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
-
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-
 h2 {
+
   margin-top: 0;
+
   font-size: 20px;
 }
 
 
 h3 {
+
   margin-top: 28px;
+
   margin-bottom: 12px;
+
   font-size: 17px;
+}
+
+
+/* ========================================
+   タブ
+   ======================================== */
+
+.tab-navigation {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 6px;
+
+  margin-bottom: 16px;
+
+  padding: 5px;
+
+  background: #e5e8eb;
+
+  border-radius: 12px;
+}
+
+
+.tab-button {
+
+  margin: 0;
+
+  padding: 11px 5px;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #555;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.tab-button.active {
+
+  background: #fff;
+
+  color: #222;
+
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ========================================
+   画面切り替え
+   ======================================== */
+
+.tab-content {
+
+  display: none;
+}
+
+
+.tab-content.active {
+
+  display: block;
+}
+
+
+/* ========================================
+   カード
+   ======================================== */
+
+.card {
+
+  background: #fff;
+
+  border-radius: 16px;
+
+  padding: 20px;
+
+  margin-bottom: 20px;
+
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -66,6 +174,7 @@ h3 {
    ======================================== */
 
 .dashboard-grid {
+
   display: grid;
 
   grid-template-columns:
@@ -76,6 +185,7 @@ h3 {
 
 
 .dashboard-item {
+
   padding: 16px;
 
   background: #f4f6f8;
@@ -87,6 +197,7 @@ h3 {
 
 
 .dashboard-label {
+
   display: block;
 
   margin-bottom: 8px;
@@ -98,6 +209,7 @@ h3 {
 
 
 .dashboard-item strong {
+
   display: block;
 
   font-size: 20px;
@@ -107,6 +219,7 @@ h3 {
 
 
 .dashboard-period {
+
   margin-top: -4px;
 
   color: #666;
@@ -116,10 +229,11 @@ h3 {
 
 
 /* ========================================
-   履歴テーブル
+   履歴
    ======================================== */
 
 .table-wrapper {
+
   width: 100%;
 
   overflow-x: auto;
@@ -127,6 +241,7 @@ h3 {
 
 
 table {
+
   width: 100%;
 
   border-collapse: collapse;
@@ -137,9 +252,11 @@ table {
 
 th,
 td {
+
   padding: 10px 6px;
 
-  border-bottom: 1px solid #e1e5e8;
+  border-bottom:
+    1px solid #e1e5e8;
 
   text-align: center;
 
@@ -148,9 +265,198 @@ td {
 
 
 th {
+
   font-weight: 700;
 
   background: #f4f6f8;
+}
+
+
+/* ========================================
+   統計分析
+   ======================================== */
+
+.period-selector {
+
+  padding: 14px;
+
+  background: #f4f6f8;
+
+  border-radius: 12px;
+}
+
+
+.period-selector h3 {
+
+  margin-top: 0;
+}
+
+
+.period-buttons {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 6px;
+}
+
+
+.period-button {
+
+  width: 100%;
+
+  margin: 0;
+
+  padding: 10px 4px;
+
+  border: 1px solid #ccd2d8;
+
+  border-radius: 9px;
+
+  background: #fff;
+
+  color: #444;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.period-button.active {
+
+  background: #222;
+
+  color: #fff;
+
+  border-color: #222;
+}
+
+
+.period-description {
+
+  margin: 10px 0 0;
+
+  color: #666;
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+
+/* ========================================
+   統計値
+   ======================================== */
+
+.statistics-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 10px;
+}
+
+
+.statistics-item {
+
+  padding: 14px;
+
+  background: #f4f6f8;
+
+  border-radius: 12px;
+}
+
+
+.statistics-item span {
+
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #666;
+
+  font-size: 13px;
+}
+
+
+.statistics-item strong {
+
+  display: block;
+
+  font-size: 19px;
+}
+
+
+/* ========================================
+   相関
+   ======================================== */
+
+.correlation-card {
+
+  padding: 18px;
+
+  background: #f4f6f8;
+
+  border-radius: 12px;
+
+  text-align: center;
+}
+
+
+.correlation-card strong {
+
+  display: block;
+
+  margin: 8px 0;
+
+  font-size: 28px;
+}
+
+
+.correlation-card p {
+
+  margin: 0;
+
+  color: #666;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+
+/* ========================================
+   グラフ
+   ======================================== */
+
+.chart-section {
+
+  position: relative;
+
+  background: #fff;
+
+  padding: 16px;
+
+  margin-bottom: 16px;
+
+  border-radius: 12px;
+
+  min-height: 250px;
+}
+
+
+.chart-section h2 {
+
+  font-size: 18px;
+
+  margin-bottom: 12px;
 }
 
 
@@ -159,6 +465,7 @@ th {
    ======================================== */
 
 label {
+
   display: block;
 
   margin: 18px 0 8px;
@@ -170,11 +477,13 @@ label {
 input,
 select,
 textarea {
+
   width: 100%;
 
   padding: 12px;
 
-  border: 1px solid #ccd2d8;
+  border:
+    1px solid #ccd2d8;
 
   border-radius: 10px;
 
@@ -185,11 +494,13 @@ textarea {
 
 
 textarea {
+
   resize: vertical;
 }
 
 
 .hint {
+
   margin: 6px 0 0;
 
   color: #666;
@@ -202,7 +513,8 @@ textarea {
    ボタン
    ======================================== */
 
-button {
+#saveButton {
+
   width: 100%;
 
   margin-top: 32px;
@@ -225,7 +537,8 @@ button {
 }
 
 
-button:disabled {
+#saveButton:disabled {
+
   opacity: 0.6;
 }
 
@@ -235,6 +548,7 @@ button:disabled {
    ======================================== */
 
 .message {
+
   min-height: 24px;
 
   margin: 14px 0 0;
@@ -251,30 +565,76 @@ button:disabled {
 
 @media (max-width: 480px) {
 
+
   .container {
+
     padding: 12px;
   }
 
+
   .card {
+
     padding: 16px;
   }
 
+
   .dashboard-grid {
+
     gap: 8px;
   }
 
+
   .dashboard-item {
+
     padding: 12px;
   }
 
+
   .dashboard-item strong {
+
     font-size: 17px;
   }
 
-  th,
-  td {
-    padding: 8px 4px;
+
+  .statistics-grid {
+
+    gap: 8px;
+  }
+
+
+  .statistics-item {
+
+    padding: 12px;
+  }
+
+
+  .statistics-item strong {
+
+    font-size: 17px;
+  }
+
+
+  .period-button {
+
     font-size: 13px;
   }
+
+
+  th,
+  td {
+
+    padding: 8px 4px;
+
+    font-size: 13px;
+  }
+
+
+  .chart-section {
+
+    padding: 10px;
+
+    min-height: 220px;
+  }
+
 
 }
