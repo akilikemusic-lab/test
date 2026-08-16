@@ -237,6 +237,30 @@ const notesInput =
       document.getElementById(
         "statisticsPeriodText"
       );
+      
+          // ======================================
+    // AI分析
+    // ======================================
+
+    const generateAiPromptButton =
+      document.getElementById(
+        "generateAiPromptButton"
+      );
+
+    const aiPrompt =
+      document.getElementById(
+        "aiPrompt"
+      );
+
+    const copyAiPromptButton =
+      document.getElementById(
+        "copyAiPromptButton"
+      );
+
+    const aiPromptMessage =
+      document.getElementById(
+        "aiPromptMessage"
+      );
 
 
     // ======================================
@@ -291,8 +315,13 @@ const requiredElements = [
 
   sleepRhythmCorrelation,
   correlationDescription,
-  statisticsPeriodText
+  statisticsPeriodText,
 
+  generateAiPromptButton,
+  aiPrompt,
+  copyAiPromptButton,
+  aiPromptMessage,
+  
 ];
 
 
@@ -650,6 +679,95 @@ const data = {
       }
     );
 
+    // ======================================
+    // AI分析プロンプト生成
+    // ======================================
+
+    generateAiPromptButton.addEventListener(
+      "click",
+      () => {
+
+        aiPromptMessage.textContent =
+          "";
+
+        const data =
+          getPeriodData();
+
+        if (
+          data.length === 0
+        ) {
+
+          aiPrompt.value =
+            "";
+
+          copyAiPromptButton.disabled =
+            true;
+
+          aiPromptMessage.textContent =
+            "この期間には分析できるデータがありません。";
+
+          return;
+
+        }
+
+        const prompt =
+          generateAiAnalysisPrompt(
+            data
+          );
+
+        aiPrompt.value =
+          prompt;
+
+        copyAiPromptButton.disabled =
+          false;
+
+        aiPromptMessage.textContent =
+          "AI分析用プロンプトを作成しました。";
+
+      }
+    );
+
+
+    // ======================================
+    // AI分析プロンプトコピー
+    // ======================================
+
+    copyAiPromptButton.addEventListener(
+      "click",
+      async () => {
+
+        if (
+          !aiPrompt.value
+        ) {
+
+          return;
+
+        }
+
+        try {
+
+          await navigator.clipboard.writeText(
+            aiPrompt.value
+          );
+
+          aiPromptMessage.textContent =
+            "プロンプトをコピーしました。";
+
+        } catch (error) {
+
+          console.error(
+            "コピーエラー:",
+            error
+          );
+
+          aiPromptMessage.textContent =
+            "コピーできませんでした。プロンプトを手動でコピーしてください。";
+
+        }
+
+      }
+    );
+    
 
     // ======================================
     // タブ設定
@@ -722,6 +840,535 @@ const data = {
     }
 
 
+    // ======================================
+    // AI分析プロンプト生成
+    // ======================================
+
+    function generateAiAnalysisPrompt(
+      data
+    ) {
+
+      const sortedData =
+        data
+          .slice()
+          .sort(
+            (a, b) =>
+              parseDate(a.date) -
+              parseDate(b.date)
+          );
+
+
+      // ==================================
+      // 基本統計
+      // ==================================
+
+      const sleepValues =
+        sortedData
+          .map(
+            item =>
+              Number(
+                item.sleepDurationMinutes
+              )
+          )
+          .filter(
+            value =>
+              Number.isFinite(value) &&
+              value > 0
+          );
+
+
+      const rhythmValues =
+        sortedData
+          .map(
+            item =>
+              Number(
+                item.rhythmGameCondition
+              )
+          )
+          .filter(
+            value =>
+              Number.isFinite(value) &&
+              value > 0
+          );
+
+
+      const physicalValues =
+        sortedData
+          .map(
+            item =>
+              Number(
+                item.physicalCondition
+              )
+          )
+          .filter(
+            value =>
+              Number.isFinite(value) &&
+              value > 0
+          );
+
+
+      const averageSleep =
+        sleepValues.length > 0
+          ? Math.round(
+              calculateMean(
+                sleepValues
+              )
+            )
+          : null;
+
+
+      const medianSleep =
+        sleepValues.length > 0
+          ? Math.round(
+              calculateMedian(
+                sleepValues
+              )
+            )
+          : null;
+
+
+      const minSleep =
+        sleepValues.length > 0
+          ? Math.min(
+              ...sleepValues
+            )
+          : null;
+
+
+      const maxSleep =
+        sleepValues.length > 0
+          ? Math.max(
+              ...sleepValues
+            )
+          : null;
+
+
+      const averageRhythm =
+        rhythmValues.length > 0
+          ? calculateMean(
+              rhythmValues
+            )
+          : null;
+
+
+      const averagePhysical =
+        physicalValues.length > 0
+          ? calculateMean(
+              physicalValues
+            )
+          : null;
+
+
+      // ==================================
+      // 睡眠時間と音ゲーの相関
+      // ==================================
+
+      const correlation =
+        calculateSleepRhythmCorrelationValue(
+          sortedData
+        );
+
+
+      // ==================================
+      // 期間
+      // ==================================
+
+      let periodText;
+
+      if (
+        currentPeriod ===
+        "all"
+      ) {
+
+        periodText =
+          "全期間";
+
+      } else {
+
+        periodText =
+          `過去${currentPeriod}日間`;
+
+      }
+
+
+      // ==================================
+      // 日別データ
+      // ==================================
+
+      const dailyData =
+        sortedData
+          .map(
+            item => {
+
+              const sleep =
+                Number(
+                  item.sleepDurationMinutes
+                );
+
+
+              const sleepText =
+                Number.isFinite(
+                  sleep
+                ) && sleep > 0
+                  ? formatSleepDuration(
+                      sleep
+                    )
+                  : "未入力";
+
+
+              const sleepScore =
+                item.sleepScore !== null &&
+                item.sleepScore !== undefined &&
+                item.sleepScore !== ""
+                  ? item.sleepScore
+                  : "未入力";
+
+
+              const deepSleep =
+                item.deepSleepPercent !== null &&
+                item.deepSleepPercent !== undefined &&
+                item.deepSleepPercent !== ""
+                  ? `${item.deepSleepPercent}%`
+                  : "未入力";
+
+
+              const lightSleep =
+                item.lightSleepPercent !== null &&
+                item.lightSleepPercent !== undefined &&
+                item.lightSleepPercent !== ""
+                  ? `${item.lightSleepPercent}%`
+                  : "未入力";
+
+
+              const remSleep =
+                item.remSleepPercent !== null &&
+                item.remSleepPercent !== undefined &&
+                item.remSleepPercent !== ""
+                  ? `${item.remSleepPercent}%`
+                  : "未入力";
+
+
+              const rhythm =
+                item.rhythmGameCondition
+                  ? `${item.rhythmGameCondition}/5`
+                  : "未入力";
+
+
+              const physical =
+                item.physicalCondition
+                  ? `${item.physicalCondition}/5`
+                  : "未入力";
+
+
+              const game =
+                item.game ||
+                "未入力";
+
+
+              const sleepStart =
+                item.sleepStart ||
+                "未入力";
+
+
+              const sleepEnd =
+                item.sleepEnd ||
+                "未入力";
+
+
+              const beverage =
+                item.beverage ||
+                "未入力";
+
+
+              const caffeineTime =
+                item.caffeineTime ||
+                "未入力";
+
+
+              const notes =
+                item.notes ||
+                "なし";
+
+
+              return (
+                `・${formatDate(item.date)}` +
+                `｜睡眠${sleepText}` +
+                `｜睡眠スコア${sleepScore}` +
+                `｜深い睡眠${deepSleep}` +
+                `｜浅い睡眠${lightSleep}` +
+                `｜REM${remSleep}` +
+                `｜就寝${sleepStart}` +
+                `｜起床${sleepEnd}` +
+                `｜音ゲー${game}` +
+                `｜音ゲー調子${rhythm}` +
+                `｜体調${physical}` +
+                `｜飲料${beverage}` +
+                `｜カフェイン${caffeineTime}` +
+                `｜メモ${notes}`
+              );
+
+            }
+          )
+          .join("\n");
+
+
+      // ==================================
+      // プロンプト
+      // ==================================
+
+      const prompt =
+
+`あなたは睡眠データと日常コンディションを分析するAIです。
+
+以下のデータは、睡眠健康アプリに記録された実データです。
+
+このデータを客観的に分析し、
+睡眠状態・体調・リズムゲームのコンディションについて、
+分かりやすく説明してください。
+
+
+【分析期間】
+
+${periodText}
+
+記録日数：
+${sortedData.length}日
+
+
+【統計データ】
+
+平均睡眠時間：
+${averageSleep !== null
+  ? formatSleepDuration(
+      averageSleep
+    )
+  : "データなし"}
+
+中央値睡眠時間：
+${medianSleep !== null
+  ? formatSleepDuration(
+      medianSleep
+    )
+  : "データなし"}
+
+最短睡眠時間：
+${minSleep !== null
+  ? formatSleepDuration(
+      minSleep
+    )
+  : "データなし"}
+
+最長睡眠時間：
+${maxSleep !== null
+  ? formatSleepDuration(
+      maxSleep
+    )
+  : "データなし"}
+
+平均音ゲー調子：
+${averageRhythm !== null
+  ? averageRhythm.toFixed(2)
+  : "データなし"}
+
+平均体調：
+${averagePhysical !== null
+  ? averagePhysical.toFixed(2)
+  : "データなし"}
+
+睡眠時間と音ゲー調子の相関係数：
+${correlation !== null
+  ? correlation.toFixed(2)
+  : "データなし"}
+
+
+【日別データ】
+
+${dailyData}
+
+
+【分析してほしい内容】
+
+1. 睡眠時間の状態
+2. 睡眠時間のばらつき
+3. 睡眠スコアの傾向
+4. 深い睡眠・浅い睡眠・REM睡眠の傾向
+5. 就寝時刻・起床時刻の傾向
+6. 体調の傾向
+7. 音ゲーのコンディションの傾向
+8. 睡眠時間と音ゲーのコンディションの関係
+9. 睡眠と体調の関係
+10. 飲料・カフェイン摂取と睡眠の関係
+11. 特に良かった日の特徴
+12. 特に悪かった日の特徴
+13. 今後試してみる価値がある改善方法
+
+
+【重要な分析ルール】
+
+・データに存在しない事実を作らないでください。
+・入力されていないデータは「データなし」としてください。
+・相関関係と因果関係を混同しないでください。
+・「睡眠時間が長いから音ゲーの調子が良くなった」のような因果関係を断定しないでください。
+・「睡眠時間が長い日に音ゲーの調子が良い傾向がある」のように表現してください。
+・記録日数が少ない場合は、そのことを明記してください。
+・少ないデータから強い結論を出さないでください。
+・外れ値がある場合は、その影響について説明してください。
+・医学的な診断は行わないでください。
+・病気や疾患について断定しないでください。
+
+
+【回答形式】
+
+以下の構成で回答してください。
+
+■ 総合評価
+
+現在の睡眠状態を簡潔に説明してください。
+
+
+■ 睡眠
+
+睡眠時間、睡眠スコア、睡眠段階、
+就寝・起床時刻について説明してください。
+
+
+■ 体調
+
+睡眠と体調の関係について、
+データから確認できる傾向を説明してください。
+
+
+■ 音ゲー
+
+睡眠と音ゲーのコンディションについて、
+データから確認できる傾向を説明してください。
+
+
+■ 良かった日の特徴
+
+特にコンディションが良かった日の特徴を説明してください。
+
+
+■ 悪かった日の特徴
+
+特にコンディションが悪かった日の特徴を説明してください。
+
+
+■ 改善提案
+
+今後試してみる価値がある改善方法を、
+優先順位をつけて3つ程度提案してください。
+
+
+■ 注意点
+
+今回のデータから判断できないことや、
+分析上の注意点があれば説明してください。
+`;
+
+      return prompt;
+
+    }
+
+
+    // ======================================
+    // 相関係数取得
+    // ======================================
+
+    function calculateSleepRhythmCorrelationValue(
+      data
+    ) {
+
+      const pairs =
+        data
+          .map(
+            item => {
+
+              const sleep =
+                Number(
+                  item.sleepDurationMinutes
+                );
+
+              const rhythm =
+                Number(
+                  item.rhythmGameCondition
+                );
+
+
+              if (
+                !Number.isFinite(
+                  sleep
+                ) ||
+                !Number.isFinite(
+                  rhythm
+                ) ||
+                sleep <= 0 ||
+                rhythm <= 0
+              ) {
+
+                return null;
+
+              }
+
+
+              return {
+                sleep,
+                rhythm
+              };
+
+            }
+          )
+          .filter(
+            item =>
+              item !== null
+          );
+
+
+      if (
+        pairs.length < 2
+      ) {
+
+        return null;
+
+      }
+
+
+      const x =
+        pairs.map(
+          item =>
+            item.sleep
+        );
+
+
+      const y =
+        pairs.map(
+          item =>
+            item.rhythm
+        );
+
+
+      const correlation =
+        calculatePearsonCorrelation(
+          x,
+          y
+        );
+
+
+      if (
+        !Number.isFinite(
+          correlation
+        )
+      ) {
+
+        return null;
+
+      }
+
+
+      return correlation;
+
+    }
+    
     // ======================================
     // 期間ボタン設定
     // ======================================
@@ -1296,14 +1943,35 @@ const data = {
           );
 
 
-      if (
-        currentPeriod ===
-        "all"
-      ) {
+if (
+  currentPeriod ===
+  "all"
+) {
 
-        return sortedData;
+  const today =
+    new Date();
 
-      }
+  today.setHours(
+    23,
+    59,
+    59,
+    999
+  );
+
+  return sortedData.filter(
+    item => {
+
+      const date =
+        parseDate(
+          item.date
+        );
+
+      return date <= today;
+
+    }
+  );
+
+}
 
 
       const days =

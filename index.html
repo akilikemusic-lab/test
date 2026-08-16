@@ -558,7 +558,53 @@
 
       </section>
 
+      <!-- ====================================
+           AI分析
+           ==================================== -->
 
+      <h3>
+        AI分析
+      </h3>
+
+      <section class="ai-analysis-section">
+
+        <p>
+          現在選択している分析期間の統計データを、
+          ChatGPTで分析するためのプロンプトを作成します。
+        </p>
+
+        <button
+          id="generateAiPromptButton"
+          type="button"
+        >
+          AI分析用プロンプトを作成
+        </button>
+
+        <p
+          id="aiPromptMessage"
+          class="message"
+        ></p>
+
+        <label for="aiPrompt">
+          AI分析用プロンプト
+        </label>
+
+        <textarea
+          id="aiPrompt"
+          rows="20"
+          readonly
+          placeholder="「AI分析用プロンプトを作成」ボタンを押してください。"
+        ></textarea>
+
+        <button
+          id="copyAiPromptButton"
+          type="button"
+          disabled
+        >
+          プロンプトをコピー
+        </button>
+
+      </section>
     </section>
 
 
