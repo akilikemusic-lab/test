@@ -683,16 +683,39 @@ const data = {
     // AI分析プロンプト生成
     // ======================================
 
-    generateAiPromptButton.addEventListener(
-      "click",
-      () => {
+generateAiPromptButton.addEventListener(
+  "click",
+  () => {
 
-        aiPromptMessage.textContent =
-          "";
+    aiPromptMessage.textContent =
+      "";
 
-        const data =
-          getPeriodData();
+    console.log(
+      "AIプロンプト生成開始"
+    );
 
+    console.log(
+      "allSleepData:",
+      allSleepData
+    );
+
+    console.log(
+      "currentPeriod:",
+      currentPeriod
+    );
+
+    const data =
+      getPeriodData();
+
+    console.log(
+      "getPeriodData結果:",
+      data
+    );
+
+    console.log(
+      "データ件数:",
+      data.length
+    );
         if (
           data.length === 0
         ) {
